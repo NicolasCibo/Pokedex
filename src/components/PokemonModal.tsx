@@ -1,6 +1,7 @@
 import { Button, Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 import { useState, useEffect, useRef } from 'react'
 import { useAppStore } from '../stores/useAppStore'
+import { useLocation } from 'react-router-dom'
 import { PokeURL } from "../types"
 import PokemonEffectiveness from './PokemonEffectiveness'
 import PokemonEvolution from './PokemonEvolution'
@@ -15,6 +16,8 @@ function PokemonModal() {
   const [loading, setLoading] = useState(false)
   const ImgView = useRef<HTMLDivElement>(null)
 
+  const { pathname } = useLocation()
+
   const modal = useAppStore(state => state.modal)
   const modalSource = useAppStore(state => state.modalSource)
   const myteamPokemonInfoId = useAppStore(state => state.myteamPokemonInfoId)
@@ -23,6 +26,7 @@ function PokemonModal() {
   const typeColor = useAppStore(state => state.typeColor)
   const addMyteam = useAppStore(state => state.addMyteam)
   const deleteMyteam = useAppStore(state => state.deleteMyteam)
+  const upgradeAppTitle = useAppStore(state => state.upgradeAppTitle)
   const appTitle = useAppStore(state => state.appTitle)
 
   const front_default = pokemonFullInfo.sprites?.other['official-artwork'].front_default
@@ -74,6 +78,12 @@ function PokemonModal() {
     document.title = appTitle
   }
 
+  const closeUpgradeTitle = () => {
+    const pageTitle = pathname === "/myteam" ? "Pokédex - My Team" : "Pokédex - Home"
+    upgradeAppTitle(pageTitle)
+    document.title = pageTitle 
+  }
+
   useEffect(() => {
     if(evolution && moves && abilities){
       setLoading(false)
@@ -85,7 +95,7 @@ function PokemonModal() {
   return (
     <>
       <Transition appear show={modal}>
-        <Dialog as="div" className="relative z-10 focus:outline-none" onClose={() => {closeModal(); shiny === true && showShiny(); upgradeTitle()}}>
+        <Dialog as="div" className="relative z-10 focus:outline-none" onClose={() => {shiny === true && showShiny(); upgradeTitle();}}>
           <div className={`${is4k ? 'flex justify-center' : ''} fixed inset-0 z-10 w-screen overflow-y-auto`}>
             <div className="flex min-h-full items-center justify-center p-4" ref={ImgView}>
               <TransitionChild
@@ -167,7 +177,7 @@ function PokemonModal() {
                     <Button
                       id="close"
                       className="rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white"
-                      onClick={() => {closeModal(); shiny === true && showShiny()}}
+                      onClick={() => {closeModal(); shiny === true && showShiny();  closeUpgradeTitle()}}
                     >
                       Close
                     </Button>
