@@ -15,7 +15,7 @@ function PokemonMoves() {
     const tableContainerRef = useRef<HTMLDivElement>(null)
 
     const isScrollable = moves.length > 10
-    const moveNames = moves?.map(move => move.names.filter(name => name.language.name === "en"))
+    const moveNames = movesFilterList?.map(move => move.names.filter(name => name.language.name === "en"))
     const isMobile = useMediaQuery('(max-width: 768px)')
     const isTablet = useMediaQuery('(max-width: 1024px)')
 
@@ -33,7 +33,6 @@ function PokemonMoves() {
         const filtered = flatMoves.filter(move =>
             move.names.some(name => name.name.toLowerCase().includes(searchMove))
         )
-
         setMovesFilterList(filtered)
     }
 
